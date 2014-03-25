@@ -19,6 +19,8 @@ describe('DynamoQuery', function () {
         attribute2: Number
     });
 
+    var callback = function() { };
+
     it('should execute with "exec"', function () {
         var model = new DynamoModel('my-table', schema);
         model.dynamodb.query = function (params, callback) {
@@ -26,7 +28,7 @@ describe('DynamoQuery', function () {
             expect(params).to.have.property('KeyConditions');
         };
         var query = model.query({ id: 'text' });
-        query.exec();
+        query.exec(function() { });
     });
 
     it('should allow the selection of fields to return with "select"', function () {
@@ -40,7 +42,7 @@ describe('DynamoQuery', function () {
             expect(params.AttributesToGet).to.contain('field3');
         };
         var query = model.query({ id: 'text' });
-        query.select('field1', 'field2', 'field3').exec();
+        query.select('field1', 'field2', 'field3').exec(function() { });
     });
 
     it('should return the consumed capacity with "returnConsumedCapacity"', function () {
@@ -49,7 +51,7 @@ describe('DynamoQuery', function () {
             expect(params).to.have.property('ReturnConsumedCapacity', true);
         };
         var query = model.query({ id: 'text' });
-        query.returnConsumedCapacity().exec();
+        query.returnConsumedCapacity().exec(function() { });
     });
 
     it('should limit the number of items with "limit"', function () {
@@ -58,7 +60,7 @@ describe('DynamoQuery', function () {
             expect(params).to.have.property('Limit', 10);
         };
         var query = model.query({ id: 'text' });
-        query.limit(10).exec();
+        query.limit(10).exec(function() { });
     });
 
     it('should count number of items with "count"', function () {
@@ -67,7 +69,7 @@ describe('DynamoQuery', function () {
             expect(params).to.have.property('Select', 'COUNT');
         };
         var query = model.query({ id: 'text' });
-        query.count().exec();
+        query.count().exec(function() {});
     });
 
     it('should allow paging with "next"', function () {
