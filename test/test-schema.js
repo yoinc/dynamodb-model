@@ -61,15 +61,28 @@ describe('DynamoSchema', function () {
         var schema = new DynamoSchema({ date: Date });
         expect(schema.mappers.date).to.equal(DynamoSchema.mappers.Date);
 
-        var now = new Date(Date.now());
-        var doc = { date: now };
-        var outboundDoc = schema.mapToDb(doc);
-        expect(outboundDoc).to.have.property('date');
-        expect(outboundDoc.date).to.have.property('N', String(+now));
+        context('when date is not null', function() {
+            var now = new Date(Date.now());
+            var doc = { date: now };
+            var outboundDoc = schema.mapToDb(doc);
+            expect(outboundDoc).to.have.property('date');
+            expect(outboundDoc.date).to.have.property('N', String(+now));
 
-        var inboundDoc = schema.mapFromDb(outboundDoc);
-        expect(inboundDoc).to.have.property('date');
-        expect(+inboundDoc.date).to.equal(+now);
+            var inboundDoc = schema.mapFromDb(outboundDoc);
+            expect(inboundDoc).to.have.property('date');
+            expect(+inboundDoc.date).to.equal(+now);
+        });
+
+        context('when date is null', function() {
+            var doc = { date: null };
+            var outboundDoc = schema.mapToDb(doc);
+            expect(outboundDoc).to.have.property('date');
+            expect(outboundDoc.date).to.have.property('N', String(null));
+
+            var inboundDoc = schema.mapFromDb(outboundDoc);
+            expect(inboundDoc).to.have.property('date');
+            expect(inboundDoc.date).to.equal(null);
+        });
     });
 
     it('should map JSON', function () {
